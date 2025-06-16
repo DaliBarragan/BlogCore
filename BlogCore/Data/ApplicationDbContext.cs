@@ -9,5 +9,7 @@ namespace BlogCore.Data
             : base(options)
         {
         }
+
+        //Poner modelos que se vayan creando
     }
 }
