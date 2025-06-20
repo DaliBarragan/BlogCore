@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using BlogCore.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace BlogCore.Data
@@ -11,5 +12,6 @@ namespace BlogCore.Data
         }
 
         //Poner modelos que se vayan creando
+        public DbSet<Categoria> Categoria { get; set; }
     }
 }
