@@ -34,22 +34,68 @@ namespace BlogCore.AccesoDatos.Data.Repository
 
         public IEnumerable<T> GetAll(Expression<Func<T, bool>>? filter = null, Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null, string? includeProperties = null)
         {
-            throw new NotImplementedException();
+            //Se crea una consulta IQueryable a partor del dbSet del contexto
+            IQueryable<T> query = dbSet;
+
+            //Se aplica el filtro si se pasa
+            if (filter != null)
+            {
+                //Si se pasa un filtro, se aplica a la consulta
+                query = query.Where(filter);
+            }
+
+            if (includeProperties != null)
+            {
+                //Si se pasan propiedades a incluir, se separan por comas y se incluyen en la consulta
+                foreach (var includeProperty in includeProperties.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    query = query.Include(includeProperty);
+                }
+            }
+
+            if (orderBy != null)
+            {
+                //Si se pasa un orden, se aplica a la consulta
+                return orderBy(query).ToList();
+            }
+            
+            //Si no se pasa un orden, se devuelve la consulta sin ordenar
+            return query.ToList();
+
         }
 
         public T GetFirstOrDefault(Expression<Func<T, bool>> filter, string? includeProperties = null)
         {
-            throw new NotImplementedException();
+            IQueryable<T> query = dbSet;
+
+            //Se aplica el filtro si se pasa
+            if (filter != null)
+            {
+                //Si se pasa un filtro, se aplica a la consulta
+                query = query.Where(filter);
+            }
+
+            if (includeProperties != null)
+            {
+                //Si se pasan propiedades a incluir, se separan por comas y se incluyen en la consulta
+                foreach (var includeProperty in includeProperties.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    query = query.Include(includeProperty);
+                }
+            }
+            
+            return query.FirstOrDefault();
+
         }
 
         public void Remove(int id)
         {
-            throw new NotImplementedException();
+            T entityToRemove = dbSet.Find(id);
         }
 
         public void Remove(T entity)
         {
-            throw new NotImplementedException();
+            dbSet.Remove(entity);
         }
 
         public void Save()
