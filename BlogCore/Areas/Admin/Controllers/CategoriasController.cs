@@ -1,4 +1,5 @@
 ﻿using BlogCore.AccesoDatos.Data.Repository.IRepository;
+using BlogCore.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BlogCore.Areas.Admin.Controllers
@@ -23,6 +24,20 @@ namespace BlogCore.Areas.Admin.Controllers
         public IActionResult Create()
         {
             return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Create(Categoria categoria)
+        {
+            if (ModelState.IsValid)
+            {
+                _contenedorTrabajo.Categoria.Add(categoria);
+                _contenedorTrabajo.Save();
+                TempData["success"] = "Categoria creada correctamente.";
+                return RedirectToAction("Index");
+            }
+            return View(categoria);
         }
 
         #region API Calls
