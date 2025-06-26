@@ -59,27 +59,29 @@ function cargarDatatable() {
 /////REVISAR FUNCTION DELETE
 function Delete(url) {
     console.log("Entrando a Eliminar");
-    swal({
-        title: "Esta seguro de borrar?",
-        text: "Este contenido no se puede recuperar!",
-        type: "warning",
+    Swal.fire({
+        title: "¿Estás seguro de borrar?",
+        text: "¡Este contenido no se puede recuperar!",
+        icon: "warning",
         showCancelButton: true,
         confirmButtonColor: "#DD6B55",
-        confirmButtonText: "Si, borrar!",
-        closeOnconfirm: true
-    }, function () {
-        $.ajax({
-            type: 'DELETE',
-            url: url,
-            success: function (data) {
-                if (data.success) {
-                    toastr.success(data.message);
-                    dataTable.ajax.reload();
+        cancelButtonColor: "#3085d6",
+        confirmButtonText: "Sí, borrar!",
+        cancelButtonText: "Cancelar"
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                type: 'DELETE',
+                url: url,
+                success: function (data) {
+                    if (data.success) {
+                        toastr.success(data.message);
+                        dataTable.ajax.reload();
+                    } else {
+                        toastr.error(data.message);
+                    }
                 }
-                else {
-                    toastr.error(data.message);
-                }
-            }
-        });
+            });
+        }
     });
 }
