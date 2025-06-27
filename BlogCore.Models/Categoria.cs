@@ -15,8 +15,9 @@ namespace BlogCore.Models
         [Required(ErrorMessage = "El nombre es obligatorio")]
         [Display(Name = "Nombre de la categoria")]
         public string Nombre { get; set; }
-        
+
         [Display(Name = "Orden de Visualizacion")]
+        [Range(1, 100, ErrorMessage = "El orden debe estar entre 1 y 100")]
         public int? Orden { get; set; }
         
     }
