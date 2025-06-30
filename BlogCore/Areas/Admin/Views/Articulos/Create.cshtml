@@ -34,7 +34,7 @@
                     <label for="Categoria" class="control-label">Categoria</label>
                 </div>
                 <div class="col-8">
-                    @Html.DropDownListFor(model => model.Articulo.CategoriaId, Model.ListaCategorias, "Seleccione una Categoria", new { @class = "form-control" })
+                    @Html.DropDownListFor(model => model.Articulo.CategoriaId, Model.ListaCategorias as IEnumerable<SelectListItem>, "Seleccione una Categoria", new { @class = "form-control" })
                     <span asp-validation-for="Articulo.CategoriaId" class="text-danger"></span>
                 </div>
             </div>
@@ -44,8 +44,7 @@
                     <label asp-for="Articulo.URLImagen" class="control-label">Descripcion</label>
                 </div>
                 <div class="col-8">
-                    <input type="file" name="archivos" class="form-control" id="subidaArchivos"/>
-                    <span asp-validation-for="Articulo.URLImagen" class="text-danger"></span>
+                    <input type="file" name="files" class="form-control" id="subidaArchivos"/>
                 </div>
             </div>
             <br>

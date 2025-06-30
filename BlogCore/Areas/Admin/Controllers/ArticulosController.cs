@@ -9,10 +9,13 @@ namespace BlogCore.Areas.Admin.Controllers
     public class ArticulosController : Controller
     {
         private readonly IContenedorTrabajo _contenedorTrabajo;
+        private readonly IWebHostEnvironment _hostingEnvironment;
 
-        public ArticulosController(IContenedorTrabajo contenedorTrabajo)
+        public ArticulosController(IContenedorTrabajo contenedorTrabajo,
+            IWebHostEnvironment hostingEnvironment)
         {
             _contenedorTrabajo = contenedorTrabajo;
+            _hostingEnvironment = hostingEnvironment;
         }
 
         [HttpGet]
@@ -26,7 +29,7 @@ namespace BlogCore.Areas.Admin.Controllers
         {
             ArticuloVM articuloVM = new ArticuloVM()
             {
-                Articulo = new Articulo(),
+                Articulo = new BlogCore.Models.Articulo(),
                 ListaCategorias = _contenedorTrabajo.Categoria.GetListaCategorias()
                 
             };
@@ -35,16 +38,39 @@ namespace BlogCore.Areas.Admin.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(Categoria categoria)
+        public IActionResult Create(ArticuloVM articuloVM)
         {
+            Console.WriteLine(articuloVM);
             if (ModelState.IsValid)
             {
-                _contenedorTrabajo.Categoria.Add(categoria);
-                _contenedorTrabajo.Save();
-                TempData["success"] = "Categoria creada correctamente.";
-                return RedirectToAction("Index");
+                string rutaPrincipal = _hostingEnvironment.WebRootPath;
+                var archivos = HttpContext.Request.Form.Files;
+                if(articuloVM.Articulo.Id == 0 && archivos.Count() > 0)
+                {
+                    // Nueva creacion
+                    string nombreArchivo = Guid.NewGuid().ToString();
+                    var subidas = Path.Combine(rutaPrincipal, @"imagenes\articulos");
+                    var extension = Path.GetExtension(archivos[0].FileName);
+
+                    using (var fileStreams = new FileStream(Path.Combine(subidas, nombreArchivo + extension), FileMode.Create))
+                    {
+                        archivos[0].CopyTo(fileStreams);
+                    }
+                    articuloVM.Articulo.URLImagen = @"\imagenes\articulos\" + nombreArchivo + extension;
+                    articuloVM.Articulo.FechaCreacion = DateTime.Now.ToString();
+                    _contenedorTrabajo.Articulo.Add(articuloVM.Articulo);
+                    _contenedorTrabajo.Save();
+
+                    return RedirectToAction(nameof(Index));
+                }
+                else
+                {
+                    ModelState.AddModelError("Imagen", "Debe subir una imagen para el articulo.");
+                }
+                
             }
-            return View(categoria);
+            articuloVM.ListaCategorias = _contenedorTrabajo.Categoria.GetListaCategorias();
+            return View(articuloVM);
         }
 
         [HttpGet]
