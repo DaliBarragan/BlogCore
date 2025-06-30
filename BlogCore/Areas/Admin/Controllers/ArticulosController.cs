@@ -41,34 +41,32 @@ namespace BlogCore.Areas.Admin.Controllers
         public IActionResult Create(ArticuloVM articuloVM)
         {
             Console.WriteLine(articuloVM);
-            if (ModelState.IsValid)
+            
+            string rutaPrincipal = _hostingEnvironment.WebRootPath;
+            var archivos = HttpContext.Request.Form.Files;
+            if(articuloVM.Articulo.Id == 0 && archivos.Count() > 0)
             {
-                string rutaPrincipal = _hostingEnvironment.WebRootPath;
-                var archivos = HttpContext.Request.Form.Files;
-                if(articuloVM.Articulo.Id == 0 && archivos.Count() > 0)
-                {
-                    // Nueva creacion
-                    string nombreArchivo = Guid.NewGuid().ToString();
-                    var subidas = Path.Combine(rutaPrincipal, @"imagenes\articulos");
-                    var extension = Path.GetExtension(archivos[0].FileName);
+                // Nueva creacion
+                string nombreArchivo = Guid.NewGuid().ToString();
+                var subidas = Path.Combine(rutaPrincipal, @"imagenes\articulos");
+                var extension = Path.GetExtension(archivos[0].FileName);
 
-                    using (var fileStreams = new FileStream(Path.Combine(subidas, nombreArchivo + extension), FileMode.Create))
-                    {
-                        archivos[0].CopyTo(fileStreams);
-                    }
-                    articuloVM.Articulo.URLImagen = @"\imagenes\articulos\" + nombreArchivo + extension;
-                    articuloVM.Articulo.FechaCreacion = DateTime.Now.ToString();
-                    _contenedorTrabajo.Articulo.Add(articuloVM.Articulo);
-                    _contenedorTrabajo.Save();
-
-                    return RedirectToAction(nameof(Index));
-                }
-                else
+                using (var fileStreams = new FileStream(Path.Combine(subidas, nombreArchivo + extension), FileMode.Create))
                 {
-                    ModelState.AddModelError("Imagen", "Debe subir una imagen para el articulo.");
+                    archivos[0].CopyTo(fileStreams);
                 }
-                
+                articuloVM.Articulo.URLImagen = @"\imagenes\articulos\" + nombreArchivo + extension;
+                articuloVM.Articulo.FechaCreacion = DateTime.Now.ToString();
+                _contenedorTrabajo.Articulo.Add(articuloVM.Articulo);
+                _contenedorTrabajo.Save();
+
+                return RedirectToAction(nameof(Index));
             }
+            else
+            {
+                ModelState.AddModelError("Imagen", "Debe subir una imagen para el articulo.");
+            }
+        
             articuloVM.ListaCategorias = _contenedorTrabajo.Categoria.GetListaCategorias();
             return View(articuloVM);
         }
