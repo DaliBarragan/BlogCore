@@ -72,15 +72,23 @@ namespace BlogCore.Areas.Admin.Controllers
         }
 
         [HttpGet]
-        public IActionResult Edit(int id)
+        public IActionResult Edit(int? id)
         {
-            Categoria categoria = new Categoria();
-            categoria = _contenedorTrabajo.Categoria.Get(id);
-            if (categoria == null)
+            ArticuloVM articuloVM = new ArticuloVM()
+            {
+                Articulo = new Articulo(),
+                ListaCategorias = _contenedorTrabajo.Categoria.GetListaCategorias()
+            };
+            if (id != null)
+            {
+                articuloVM.Articulo = _contenedorTrabajo.Articulo.Get(id.GetValueOrDefault());
+                
+            }
+            else
             {
                 return NotFound();
             }
-            return View(categoria);
+            return View(articuloVM);
         }
 
         [HttpPost]

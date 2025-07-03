@@ -1,0 +1,89 @@
+@model BlogCore.Models.ViewModels.ArticuloVM
+
+@{
+    ViewData["Title"] = "Editar Articulo";
+}
+<br><br>
+<h3 class="text-center">Editar Articulo</h3>
+<form method="post" asp-action="Edit" enctype="multipart/form-data">
+    <div class="row px-2 border">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="col-8 my-4">
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="Articulo.Nombre" class="control-label">Nombre</label>
+                </div>
+                <div class="col-8">
+                    <input asp-for="Articulo.Nombre" class="form-control" placeholder="Ingrese el nombre" />
+                    <span asp-validation-for="Articulo.Nombre" class="text-danger"></span>
+                </div>
+            </div>
+            <br>
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="Articulo.Descripcion" class="control-label">Descripcion</label>
+                </div>
+                <div class="col-8">
+                    <textarea asp-for="Articulo.Descripcion" class="form-control" style="height: 150px;"></textarea>
+                    <span asp-validation-for="Articulo.Descripcion" class="text-danger"></span>
+                </div>
+            </div>
+            <br>
+            <div class="form-group row">
+                <div class="col-4">
+                    <label for="Categoria" class="control-label">Categoria</label>
+                </div>
+                <div class="col-8">
+                    @Html.DropDownListFor(model => model.Articulo.CategoriaId, Model.ListaCategorias as IEnumerable<SelectListItem>, "Seleccione una Categoria", new { @class = "form-control" })
+                    <span asp-validation-for="Articulo.CategoriaId" class="text-danger"></span>
+                </div>
+            </div>
+            <br>
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="Articulo.URLImagen" class="control-label">Descripcion</label>
+                </div>
+                <div class="col-8">
+                    <input type="file" name="files" class="form-control" id="subidaArchivos"/>
+                </div>
+            </div>
+            <br>
+            <div class="form-group-row">
+                <div class="col-8">
+                    <partial name="_VistaCrearVolver" />
+                </div>
+            </div>
+        </div>
+        <div class="col-4 pt-3 my-4">
+            <img src="@Model.Articulo.URLImagen" alt="" width="400" class="img-thumbnail" />
+        </div>
+    </div>
+</form>
+
+@section Scripts{
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/7.9.1/tinymce.min.js" integrity="sha512-09JpfVm/UE1F4k8kcVUooRJAxVMSfw/NIslGlWE/FGXb2uRO1Nt4BXAJ3LxPqNbO3Hccdu46qaBPp9wVpWAVhA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>
+        tinymce.init({
+            selector: 'textarea',
+            plugins: 'lists link image code',
+            toolbar: 'undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | code',
+            height: 300,
+            images_upload_url: '/Articulos/UploadImage',
+            automatic_uploads: true,
+            file_picker_types: 'image',
+            file_picker_callback: function (callback, value, meta) {
+                if (meta.filetype === 'image') {
+                    document.getElementById('subidaArchivos').click();
+                    document.getElementById('subidaArchivos').onchange = function () {
+                        var file = this.files[0];
+                        var reader = new FileReader();
+                        reader.onload = function (e) {
+                            callback(e.target.result, { alt: file.name });
+                        };
+                        reader.readAsDataURL(file);
+                    };
+                }
+            }
+        });
+    </script>
+}
