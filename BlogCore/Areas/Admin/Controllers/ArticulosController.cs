@@ -150,14 +150,20 @@ namespace BlogCore.Areas.Admin.Controllers
         [HttpDelete]
         public IActionResult Delete(int id)
         {
-            var categoria = _contenedorTrabajo.Categoria.Get(id);
-            if (categoria == null)
+            var articulo = _contenedorTrabajo.Articulo.Get(id);
+            string rutaPrincipal = _hostingEnvironment.WebRootPath;
+            var rutaImagen = Path.Combine(rutaPrincipal, articulo.URLImagen.TrimStart('\\'));
+            if (System.IO.File.Exists(rutaImagen))
             {
-                return Json(new { success = false, message = "Error al eliminar la categoria." });
+                System.IO.File.Delete(rutaImagen);
             }
-            _contenedorTrabajo.Categoria.Remove(categoria);
+            if (articulo == null)
+            {
+                return Json(new { success = false, message = "Error al eliminar el articulo." });
+            }
+            _contenedorTrabajo.Articulo.Remove(articulo);
             _contenedorTrabajo.Save();
-            return Json(new { success = true, message = "Categoria eliminada correctamente." });
+            return Json(new { success = true, message = "Articulo eliminado correctamente." });
         }
 
         #endregion
