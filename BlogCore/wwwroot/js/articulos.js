@@ -14,6 +14,9 @@ function cargarDatatable() {
             { "data": "id", "width": "5%" },
             { "data": "nombre", "width": "20%" },
             { "data": "categoria.nombre", "width": "10%" },
+            { "data": "urlImagen", "render": function (data) {
+                return `<img src="../${data}" alt="Imagen Articulo" style="max-width:100px; max-height:100px;" />`;
+            }, "width": "15%" },
             { "data": "fechaCreacion", "width": "10%" },
             {
                 "data": "id",
