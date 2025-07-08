@@ -40,7 +40,7 @@ namespace BlogCore.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Create(ArticuloVM articuloVM)
         {
-            Console.WriteLine(articuloVM);
+            
             
             string rutaPrincipal = _hostingEnvironment.WebRootPath;
             var archivos = HttpContext.Request.Form.Files;
@@ -93,16 +93,50 @@ namespace BlogCore.Areas.Admin.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(Categoria categoria)
+        public IActionResult Edit(ArticuloVM articuloVM)
         {
-            if (ModelState.IsValid)
+    
+            string rutaPrincipal = _hostingEnvironment.WebRootPath;
+            var archivos = HttpContext.Request.Form.Files;
+
+            var articuloDesdeDb = _contenedorTrabajo.Articulo.Get(articuloVM.Articulo.Id);
+
+            if (archivos.Count() > 0)
             {
-                _contenedorTrabajo.Categoria.Update(categoria);
+                // Nueva imagen para Articulo Existente
+                string nombreArchivo = Guid.NewGuid().ToString();
+                var subidas = Path.Combine(rutaPrincipal, @"imagenes\articulos");
+                var extension = Path.GetExtension(archivos[0].FileName);
+                var nuevaExtension = Path.GetExtension(archivos[0].FileName);
+
+                var rutaImagen = Path.Combine(rutaPrincipal, articuloDesdeDb.URLImagen.TrimStart('\\'));
+
+                if (System.IO.File.Exists(rutaImagen))
+                {
+                    System.IO.File.Delete(rutaImagen);
+                }
+
+                //Se sube el nuevo archivo
+                using (var fileStreams = new FileStream(Path.Combine(subidas, nombreArchivo + extension), FileMode.Create))
+                {
+                    archivos[0].CopyTo(fileStreams);
+                }
+                articuloVM.Articulo.URLImagen = @"\imagenes\articulos\" + nombreArchivo + extension;
+                articuloVM.Articulo.FechaCreacion = DateTime.Now.ToString();
+                _contenedorTrabajo.Articulo.Update(articuloVM.Articulo);
                 _contenedorTrabajo.Save();
-                TempData["success"] = "Categoria editada correctamente.";
-                return RedirectToAction("Index");
+                return RedirectToAction(nameof(Index));
             }
-            return View(categoria);
+            else
+            {
+                
+                articuloVM.Articulo.URLImagen = articuloDesdeDb.URLImagen;
+            }
+
+            _contenedorTrabajo.Articulo.Update(articuloVM.Articulo);
+            _contenedorTrabajo.Save();
+            return RedirectToAction(nameof(Index));
+           
         }
 
         #region API Calls
