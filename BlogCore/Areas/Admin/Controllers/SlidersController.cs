@@ -91,7 +91,7 @@ namespace BlogCore.Areas.Admin.Controllers
             {
                 // Nueva imagen para Slider Existente
                 string nombreArchivo = Guid.NewGuid().ToString();
-                var subidas = Path.Combine(rutaPrincipal, @"imagenes\articulos");
+                var subidas = Path.Combine(rutaPrincipal, @"imagenes\sliders");
                 var extension = Path.GetExtension(archivos[0].FileName);
                 var nuevaExtension = Path.GetExtension(archivos[0].FileName);
 
