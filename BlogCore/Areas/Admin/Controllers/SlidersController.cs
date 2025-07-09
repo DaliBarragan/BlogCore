@@ -79,23 +79,23 @@ namespace BlogCore.Areas.Admin.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(ArticuloVM articuloVM)
+        public IActionResult Edit(Sliders slider)
         {
     
             string rutaPrincipal = _hostingEnvironment.WebRootPath;
             var archivos = HttpContext.Request.Form.Files;
 
-            var articuloDesdeDb = _contenedorTrabajo.Articulo.Get(articuloVM.Articulo.Id);
+            var sliderDesdeDb = _contenedorTrabajo.Sliders.Get(slider.Id);
 
             if (archivos.Count() > 0)
             {
-                // Nueva imagen para Articulo Existente
+                // Nueva imagen para Slider Existente
                 string nombreArchivo = Guid.NewGuid().ToString();
                 var subidas = Path.Combine(rutaPrincipal, @"imagenes\articulos");
                 var extension = Path.GetExtension(archivos[0].FileName);
                 var nuevaExtension = Path.GetExtension(archivos[0].FileName);
 
-                var rutaImagen = Path.Combine(rutaPrincipal, articuloDesdeDb.URLImagen.TrimStart('\\'));
+                var rutaImagen = Path.Combine(rutaPrincipal, sliderDesdeDb.URLImagen.TrimStart('\\'));
 
                 if (System.IO.File.Exists(rutaImagen))
                 {
@@ -107,19 +107,18 @@ namespace BlogCore.Areas.Admin.Controllers
                 {
                     archivos[0].CopyTo(fileStreams);
                 }
-                articuloVM.Articulo.URLImagen = @"\imagenes\articulos\" + nombreArchivo + extension;
-                articuloVM.Articulo.FechaCreacion = DateTime.Now.ToString();
-                _contenedorTrabajo.Articulo.Update(articuloVM.Articulo);
+                slider.URLImagen = @"\imagenes\articulos\" + nombreArchivo + extension;
+                _contenedorTrabajo.Sliders.Update(slider);
                 _contenedorTrabajo.Save();
                 return RedirectToAction(nameof(Index));
             }
             else
             {
-                
-                articuloVM.Articulo.URLImagen = articuloDesdeDb.URLImagen;
+
+                slider.URLImagen = sliderDesdeDb.URLImagen;
             }
 
-            _contenedorTrabajo.Articulo.Update(articuloVM.Articulo);
+            _contenedorTrabajo.Sliders.Update(slider);
             _contenedorTrabajo.Save();
             return RedirectToAction(nameof(Index));
            
@@ -136,20 +135,20 @@ namespace BlogCore.Areas.Admin.Controllers
         [HttpDelete]
         public IActionResult Delete(int id)
         {
-            var articulo = _contenedorTrabajo.Articulo.Get(id);
+            var slider = _contenedorTrabajo.Sliders.Get(id);
             string rutaPrincipal = _hostingEnvironment.WebRootPath;
-            var rutaImagen = Path.Combine(rutaPrincipal, articulo.URLImagen.TrimStart('\\'));
+            var rutaImagen = Path.Combine(rutaPrincipal, slider.URLImagen.TrimStart('\\'));
             if (System.IO.File.Exists(rutaImagen))
             {
                 System.IO.File.Delete(rutaImagen);
             }
-            if (articulo == null)
+            if (slider == null)
             {
-                return Json(new { success = false, message = "Error al eliminar el articulo." });
+                return Json(new { success = false, message = "Error al eliminar el slider." });
             }
-            _contenedorTrabajo.Articulo.Remove(articulo);
+            _contenedorTrabajo.Sliders.Remove(slider);
             _contenedorTrabajo.Save();
-            return Json(new { success = true, message = "Articulo eliminado correctamente." });
+            return Json(new { success = true, message = "Slider eliminado correctamente." });
         }
 
         #endregion
