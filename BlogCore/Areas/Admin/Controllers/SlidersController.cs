@@ -43,14 +43,14 @@ namespace BlogCore.Areas.Admin.Controllers
             {
                 // Nueva creacion
                 string nombreArchivo = Guid.NewGuid().ToString();
-                var subidas = Path.Combine(rutaPrincipal, @"imagenes\articulos");
+                var subidas = Path.Combine(rutaPrincipal, @"imagenes\sliders");
                 var extension = Path.GetExtension(archivos[0].FileName);
 
                 using (var fileStreams = new FileStream(Path.Combine(subidas, nombreArchivo + extension), FileMode.Create))
                 {
                     archivos[0].CopyTo(fileStreams);
                 }
-                slider.URLImagen = @"\imagenes\articulos\" + nombreArchivo + extension;
+                slider.URLImagen = @"\imagenes\sliders\" + nombreArchivo + extension;
                 _contenedorTrabajo.Sliders.Add(slider);
                 _contenedorTrabajo.Save();
 
@@ -107,7 +107,7 @@ namespace BlogCore.Areas.Admin.Controllers
                 {
                     archivos[0].CopyTo(fileStreams);
                 }
-                slider.URLImagen = @"\imagenes\articulos\" + nombreArchivo + extension;
+                slider.URLImagen = @"\imagenes\sliders\" + nombreArchivo + extension;
                 _contenedorTrabajo.Sliders.Update(slider);
                 _contenedorTrabajo.Save();
                 return RedirectToAction(nameof(Index));
