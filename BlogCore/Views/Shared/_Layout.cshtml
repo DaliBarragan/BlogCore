@@ -25,7 +25,7 @@
                 <div class="collapse navbar-collapse" id="navbarColor02">
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
-                    <a class="nav-link active" href="#">Inicio
+                    <a class="nav-link active" href="/">Inicio
                         <span class="visually-hidden">(current)</span>
                     </a>
                     </li>
@@ -47,6 +47,10 @@
             </div>
             <partial name="_LoginPartial" />
         </nav>
+        @* Si la variable es TRUE entonces aparece, solo proviente de HomeController *@
+        @if(ViewBag.IsHome == true){
+            <partial name="_Slider" />
+        }
     </header>
     <div class="container">
         <main role="main" class="pb-3">

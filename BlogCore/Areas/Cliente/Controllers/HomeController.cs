@@ -24,6 +24,8 @@ namespace BlogCore.Areas.Cliente.Controllers
                 ListaSliders = _contenedorTrabajo.Sliders.GetAll(),
                 ListaArticulos = _contenedorTrabajo.Articulo.GetAll(includeProperties: "Categoria")
             };
+            //Se envia la variable ViewBag.IsHome para que el slider se muestre unicamente en esta vista
+            ViewBag.IsHome = true; // To indicate that this is the home page
             return View(homeVM);
         }
 

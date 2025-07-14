@@ -1,0 +1,31 @@
+@model BlogCore.Models.ViewModels.HomeVM
+@* CARRUSEL SLIDER *@
+<div id="sliderImagenes" class="carousel slide">
+  <div class="carousel-inner">
+
+    @{
+        int count = 0;
+    }
+    @foreach (var slider in Model.ListaSliders)
+    {
+        var activeClass = count++ == 0 ? "active" : "";
+        @if(slider.Estado == true){
+
+        <div class="carousel-item @activeClass">
+            <img src="@Url.Content(slider.URLImagen)" class="d-block w-100" alt="@slider.Nombre">
+            <h5 class="text-white bg-dark text-center py-1">@slider.Nombre</h5>
+        </div>
+        }
+        
+    }
+    
+  </div>
+  <button class="carousel-control-prev" type="button" data-bs-target="#sliderImagenes" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Previous</span>
+  </button>
+  <button class="carousel-control-next" type="button" data-bs-target="#sliderImagenes" data-bs-slide="next">
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Next</span>
+  </button>
+</div>
