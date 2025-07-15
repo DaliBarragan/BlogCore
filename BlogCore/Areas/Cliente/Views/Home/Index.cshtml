@@ -20,7 +20,7 @@
                         <img src="@articulo.URLImagen" class="img-thumbnail" alt="@articulo.Nombre">
                         <h5 class="card-title">@articulo.Nombre</h5>
                         <p class="card-text">@articulo.Descripcion</p>
-                        <a href="@Url.Action("Detalles", "Articulo", new { id = articulo.Id })" class="btn btn-primary">Ver Detalles</a>
+                        <a href="@Url.Action("Detalle", new { id = articulo.Id })" class="btn btn-primary">Ver Detalles</a>
                     </div>
                 </div>
             </div>

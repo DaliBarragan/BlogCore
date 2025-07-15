@@ -29,6 +29,13 @@ namespace BlogCore.Areas.Cliente.Controllers
             return View(homeVM);
         }
 
+        [HttpGet]
+        public IActionResult Detalle(int id)
+        {
+            var articuloDesdeDB = _contenedorTrabajo.Articulo.Get(id);
+            return View(articuloDesdeDB);
+        }
+
         public IActionResult Privacy()
         {
             return View();
