@@ -2,6 +2,7 @@ using BlogCore.AccesoDatos.Data.Repository.IRepository;
 using BlogCore.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
+using System.Security.Claims;
 
 namespace BlogCore.Areas.Admin.Controllers
 {
@@ -19,7 +20,12 @@ namespace BlogCore.Areas.Admin.Controllers
         public IActionResult Index()
         {
             //Opcion 1 de obtener usuarios
-            return View(_contenedorTrabajo.Usuario.GetAll());
+            // return View(_contenedorTrabajo.Usuario.GetAll());
+
+            //Opcion 2, obtener todos menos el logeado para no bloquearse a si mismo
+            var claimsIdentity = (ClaimsIdentity)this.User.Identity;
+            var usuarioActual = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+            return View(_contenedorTrabajo.Usuario.GetAll(u => u.Id != usuarioActual.Value));
         }
 
         [HttpGet]
