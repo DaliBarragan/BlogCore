@@ -13,6 +13,7 @@ namespace BlogCore.AccesoDatos.Data.Repository.IRepository
         IArticuloRepository Articulo { get; }
 
         ISlidersRepository Sliders { get; }
+        IUsuarioRepository Usuario { get; }
 
         //Agrega otros repositorios según sea necesario
         void Save();
