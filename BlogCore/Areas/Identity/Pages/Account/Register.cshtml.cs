@@ -143,6 +143,9 @@ namespace BlogCore.Areas.Identity.Pages.Account
                     else
                     {
                         // El rol enviado no es válido
+                        await _roleManager.CreateAsync(new IdentityRole(CNT.Administrador));
+                        await _roleManager.CreateAsync(new IdentityRole(CNT.Registrado));
+                        await _roleManager.CreateAsync(new IdentityRole(CNT.Cliente));
                         await _userManager.AddToRoleAsync(user, CNT.Cliente);
                     }
                     _logger.LogInformation("User created a new account with password.");
