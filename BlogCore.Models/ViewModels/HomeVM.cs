@@ -11,5 +11,9 @@ namespace BlogCore.Models.ViewModels
     {
         public IEnumerable<Sliders> ListaSliders { get; set; }
         public IEnumerable<Articulo> ListaArticulos { get; set; }
+
+        //Paginacion
+        public int PageIndex { get; set; }
+        public int TotalPages { get; set; }
     }
 }

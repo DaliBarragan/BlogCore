@@ -16,13 +16,37 @@ namespace BlogCore.Areas.Cliente.Controllers
             _contenedorTrabajo = contenedorTrabajo;
         }
 
+
+        //Primera version de Index sin paginacion
+        // [HttpGet]
+        // public IActionResult Index()
+        // {
+        //     HomeVM homeVM = new HomeVM()
+        //     {
+        //         ListaSliders = _contenedorTrabajo.Sliders.GetAll(),
+        //         ListaArticulos = _contenedorTrabajo.Articulo.GetAll(includeProperties: "Categoria")
+        //     };
+        //     //Se envia la variable ViewBag.IsHome para que el slider se muestre unicamente en esta vista
+        //     ViewBag.IsHome = true; // To indicate that this is the home page
+        //     return View(homeVM);
+        // }
+
+        //Segunda version de Index con paginacion
         [HttpGet]
-        public IActionResult Index()
+        public IActionResult Index(int page = 1, int pageSize = 3)
         {
+            var articulos = _contenedorTrabajo.Articulo.AsQueryable();
+
+            //Paginar resultados
+            var paginatedEntries = articulos.Skip((page - 1) * pageSize).Take(pageSize);
+
+
             HomeVM homeVM = new HomeVM()
             {
                 ListaSliders = _contenedorTrabajo.Sliders.GetAll(),
-                ListaArticulos = _contenedorTrabajo.Articulo.GetAll(includeProperties: "Categoria")
+                ListaArticulos = paginatedEntries.ToList(),
+                PageIndex = page,
+                TotalPages = (int)Math.Ceiling(articulos.Count() / (double)pageSize)
             };
             //Se envia la variable ViewBag.IsHome para que el slider se muestre unicamente en esta vista
             ViewBag.IsHome = true; // To indicate that this is the home page
@@ -31,7 +55,7 @@ namespace BlogCore.Areas.Cliente.Controllers
 
         //Buscador
         [HttpGet]
-        public IActionResult ResultadoBusqueda(string searchString, int page = 1, int pageSize = 6)
+        public IActionResult ResultadoBusqueda(string searchString, int page = 1, int pageSize = 3)
         {
             var articulos = _contenedorTrabajo.Articulo.AsQueryable();
             //Buscador de 
