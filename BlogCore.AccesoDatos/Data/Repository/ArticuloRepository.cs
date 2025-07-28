@@ -11,7 +11,7 @@ namespace BlogCore.AccesoDatos.Data.Repository
 {
     public class ArticuloRepository : Repository<Articulo>, IArticuloRepository
     {
-        
+
         private readonly ApplicationDbContext _db;
 
         public ArticuloRepository(ApplicationDbContext db) : base(db)
@@ -30,6 +30,11 @@ namespace BlogCore.AccesoDatos.Data.Repository
                 objFromDb.CategoriaId = articulo.CategoriaId;
             }
             _db.SaveChanges();
+        }
+
+        public IQueryable<Articulo> AsQueryable()
+        {
+            return _db.Set<Articulo>().AsQueryable();
         }
     }
 }

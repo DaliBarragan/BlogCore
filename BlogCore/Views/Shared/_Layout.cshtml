@@ -43,8 +43,8 @@
                     </li>
                     }
                 </ul>
-                <form class="d-flex">
-                    <input class="form-control me-sm-2" type="search" placeholder="Buscador">
+                <form class="d-flex" method="get" asp-controller="Home" asp-action="ResultadoBusqueda">
+                    <input class="form-control me-sm-2 d-flex text-white" type="text" placeholder="Buscador"  name="searchString" aria-label="Search">
                     <button class="btn btn-secondary my-2 my-sm-0" type="submit">Buscar</button>
                 </form>
                 </div>
