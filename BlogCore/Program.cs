@@ -1,3 +1,4 @@
+using BlogCore.AccesoDatos.Data.Inicializador;
 using BlogCore.AccesoDatos.Data.Repository;
 using BlogCore.AccesoDatos.Data.Repository.IRepository;
 using BlogCore.Data;
@@ -20,6 +21,9 @@ builder.Services.AddControllersWithViews();
 //Agregar contenedor de trabajo al contenedor IoC de inyección de dependencias
 builder.Services.AddScoped<IContenedorTrabajo, ContenedorTrabajo>();
 
+//Siembra de datos - Paso 1
+builder.Services.AddScoped<IInicializadorDB, InicializadorDB>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -33,6 +37,10 @@ else
 }
 app.UseStaticFiles();
 
+//Siembra de datos - Paso 2
+//Metodo que ejecuta la siembra de datos
+SiembraDatos();
+
 app.UseRouting();
 
 app.UseAuthorization();
@@ -43,3 +51,13 @@ app.MapControllerRoute(
 app.MapRazorPages();
 
 app.Run();
+
+//Siembra de datos - Paso 3
+void SiembraDatos()
+{
+    using (var scope = app.Services.CreateScope())
+    {
+        var inicializadorDB = scope.ServiceProvider.GetRequiredService<IInicializadorDB>();
+        inicializadorDB.Inicializar();
+    }
+}
